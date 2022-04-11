@@ -19,7 +19,7 @@ library(tidycensus)
 
 Get your census API key: http://api.census.gov/data/key_signup.html
 Copy/Paste it where the mine is in the census_api_key function
-run the census_apiKey function and then run readRenviron("~/.Renviron") to use it 
+run the census_api_key function and then run readRenviron("~/.Renviron") to use it 
 ```{r census API}
 #census_api_key("5265791396494789bc29279a5c8f6b4f1bf1f3e6", install = TRUE, overwrite = TRUE)
 ```
