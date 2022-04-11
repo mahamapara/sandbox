@@ -1,3 +1,6 @@
+You will only need exercise1.Rmd, exercise2.Rmd and youth_share_pop.csv
+
+--------------------------------------
 For both exercises:
 1. git clone
 2. create new branch and follow instructions for the exercises
