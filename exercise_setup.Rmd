@@ -1,0 +1,108 @@
+---
+title: "exercise1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(csv)
+library(readr)
+library(tidycensus)
+```
+
+
+Get your census API key: http://api.census.gov/data/key_signup.html
+Copy/Paste it where the mine is in the census_api_key function
+run the census_apiKey function and then run readRenviron("~/.Renviron") to use it 
+```{r census API}
+#census_api_key("5265791396494789bc29279a5c8f6b4f1bf1f3e6", install = TRUE, overwrite = TRUE)
+```
+
+
+***Census query set up***
+
+```{r read in data}
+#get all state codes
+president <- read_csv("1976-2020-president.csv")
+president20 <- president %>% filter(year == 2020)
+states <- unique(president20$state_po)
+
+#get all var names for ACS 2019
+vars19 <- load_variables(2019, "acs5", cache = TRUE)
+var_names <- unique(vars19$name)
+```
+
+####GET DATA FROM ACS
+
+```{r}
+
+acs_var <- read_csv("census_youth_vars3.csv")
+acs_var <- acs_var %>% filter(from == "ACS2019")
+acs_vars <- acs_var$var_name
+acs_df <- get_acs(geography = "state", 
+        variables = acs_vars, 
+        state = states, 
+        year = 2019)
+
+#add variable description only for total pop var
+acs_df1 <- acs_df %>%
+  mutate(var_desc = ifelse(variable == "B01003_001", "total population", "NA"))
+```
+
+#youth share of population
+```{r}
+#filter youth population vars
+youth_pop <- acs_df %>%
+  filter(variable %in% c("B01003_001", "B01001_001", "B01001_002", "B01001_026","B01001_007", "B01001_008", "B01001_009", "B01001_010", "B01001_011", "B01001_031", "B01001_032", "B01001_033", "B01001_034", "B01001_035"))
+
+#adds variable description
+youth_pop <- youth_pop %>%
+  mutate(var_desc = ifelse(variable == "B01003_001", "total population", 
+                           ifelse(variable == "B01001_001", "total population-sex by age", 
+                                  ifelse(variable == "B01001_002", "total population-male",
+                                         ifelse(variable == "B01001_026", "total population-female", "NA")))))
+```
+
+**get youth share from pop by state**
+
+male_youth = sum("B01001_007", "B01001_008", "B01001_009", "B01001_010", "B01001_011")
+female_youth = sum("B01001_031", "B01001_032", "B01001_033", "B01001_034", "B01001_035")
+
+sum(male_youth+female_youth)/"B01003_001" *100
+
+```{r}
+#pivot youth_pop so variable numbers are columns
+youth_pivot <- youth_pop %>%
+  pivot_wider(names_from = variable, values_from = estimate)
+
+#drop vars I don't need
+drop <- c("moe", "var_desc", "B01001_001", "B01001_002", "B01001_026")
+youth_pivot <- youth_pivot[,!(names(youth_pivot) %in% drop)]
+
+#group by to get one row per state
+youth_sum <- youth_pivot %>% group_by(GEOID, NAME) %>% summarise_all(na.omit)
+
+
+youth_sum <- youth_sum[-c(1)] #removes first column
+
+#sum all the youth groups for male and female
+youth_sum <- youth_sum %>%
+  mutate(youth_pop = apply(youth_sum[,2:11], 1, sum))
+
+#divide total youth population with total population (B01003_001)
+youth_sum <- youth_sum %>%
+  mutate(youth_sharep = (youth_pop/B01003_001)) 
+
+```
+
+##Write the CSV to folder
+```{r}
+write.csv(youth_sum, "youth_share_pop.csv") #has youthshare in fraction(not multiplied by 100)
+```
+
