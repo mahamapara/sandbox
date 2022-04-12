@@ -13,7 +13,6 @@ library(tidyr)
 library(ggplot2)
 library(csv)
 library(readr)
-library(tidycensus)
 ```
 
 
@@ -21,12 +20,15 @@ The youth_share_pop.csv is the data we will be using for this exercise
 The data comes from the ACS 2019 5 year estimates and has the youth share column which is: total youth/total population
 
 ```{r read exercise data}
-data <- read_csv("youth_share_pop.csv")
+data <- read_csv("C:/Users/pgauta01/Box/GithubLocalRepo/sandbox/youth_share_pop.csv")
 ```
 
-#get first 8 states (alphabetically) and plot youth_sharep
+Get first 8 states (alphabetically) and plot youth_sharep
+#Wrote a line to save the plot as png in the github repository
 ```{r}
-# new <- data[1:8, ]
-# ggplot(new, aes(NAME,youth_sharep)) +
-#   geom_col()
+new <- data[1:8, ]
+ggplot(new, aes(NAME,youth_sharep)) +
+geom_col()
+ggsave("C:/Users/pgauta01/Box/GithubLocalRepo/sandbox/myplot.png")
+
 ```
