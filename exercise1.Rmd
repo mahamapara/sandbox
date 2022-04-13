@@ -21,7 +21,7 @@ The youth_share_pop.csv is the data we will be using for this exercise
 The data comes from the ACS 2019 5 year estimates and has the youth share column which is: total youth/total population
 
 ```{r read exercise data}
-data <- read_csv("C:/Users/pgauta01/Box/GithubLocalRepo/sandbox/youth_share_pop.csv")
+data <- read_csv("youth_share_pop.csv")
 ```
 
 Add a column that has the youth share of population in a %
