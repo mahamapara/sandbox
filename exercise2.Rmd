@@ -25,8 +25,9 @@ data <- read_csv("youth_share_pop.csv")
 ```
 
 #get first 8 states (alphabetically) and plot youth_sharep
+# might be nice to add some color and change the scaling so you can see the variation more clearly!
 ```{r}
-# new <- data[1:8, ]
-# ggplot(new, aes(NAME,youth_sharep)) +
-#   geom_col()
+new <- data[1:8, ]
+ggplot(new, aes(NAME,youth_sharep)) +
+geom_col()
 ```

@@ -11,9 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-library(csv)
-library(readr)
-library(tidycensus)
+library('csv')
+library('readr')
+library('tidycensus')
 ```
 
 
@@ -29,11 +29,11 @@ i.e. multiple youth_sharep by 100
 
 (uncomment and run code below)
 ```{r}
-# data <- data %>%
-#   mutate(youth_share_pc = (youth_sharep*100))
+data <- data %>%
+mutate(youth_share_pc = (youth_sharep*100))
 ```
 
 #write csv for data
 ```{r}
-#write.csv(data, "yth_share_pc.csv")
+write.csv(data, "yth_share_pc.csv")
 ```
